@@ -1,0 +1,112 @@
+
+
+
+Otro Editor Dulio
+=================
+PHP Storm.
+
+
+Instalación de Laravel  5.2
+======================  ====
+Una vez instalado composer, podemos crear un proyecto de dos maneras:
+
+Usando el instalador de Laravel
+
+Necesitamos descargar el instalador con el comando
+
+composer global require "laravel/installer=~1.1"  
+
+Una vez descargado, tenemos que agregar el directorio ~/.composer/vendor/bin al path del sistema operativo, usando Linux. En caso de Windows el directorio suele estar en la ruta
+C:\Users{miUsuario}\AppData\Roaming\Composer\vendor\bin
+
+Para instalar nuestro proyecto usaremos el comando:
+
+laravel new todolist  
+
+Usando Composer:
+================
+
+
+Instalación BICON / ROLES
+
+	Tuto: 	http://www.kabytes.com/programacion/roles-y-permisos-para-laravel-5/  
+
+
+	La instalación es bien sencilla si usamos composer, no hace falta más que agregar a nuestro archivo composer.json las siguientes lineas:
+
+	{
+		"require": {
+			"php": ">=5.5.9",
+			"laravel/framework": "5.2.*",
+			"bican/roles": "2.1.*"
+		}
+	}
+
+
+	Si topas composer.json  ==> Tienes que actualizar:
+	-------------------------------------------------
+		composer update
+
+		
+	php artisan vendor:publish --provider="Bican\Roles\RolesServiceProvider" --tag=config
+	php artisan vendor:publish --provider="Bican\Roles\RolesServiceProvider" --tag=migrations
+
+	Y corremos la migración:
+
+	php artisan migrate	
+--------------------------------------------------------------------------------------------------------------------------------------------
+	
+	
+composer create-project laravel/laravel todolist -–prefer-dist  
+
+Migraciones
+===========
+
+Las migraciones funcionan como un sistema de control de versiones para base de datos.
+Aquí crearemos el esquema de nuestra base.
+
+php artisan make:migration create_projects_table --create=projects
+
+Este comando creará una nueva migración dentro de database/migrations.
+Ahora deberemos definir los campos de la tabla projects:
+
+
+        Schema::create('users', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('perIdPerX')->unsigned();            
+            $table->string('name', 30);
+            $table->string('email')->unique();
+            $table->string('password', 60);
+            $table->rememberToken();
+            $table->timestamps();
+            $table->foreign('perIdPerX')->references('idper')->on('personas');            
+        });
+
+
+CREATE TABLE public.tpv_personal
+(
+  idper integer NOT NULL DEFAULT nextval('tpv_personal_idper_seq'::regclass),
+  per_apellidos character varying(60) NOT NULL,
+  per_nombres character varying(35),
+  per_cedula character varying(15) NOT NULL,
+  per_titulo_cod integer,
+  per_titulo character varying(30),
+  per_abrevia character varying(10),
+  per_mail character varying(90),
+  per_telefono character varying(20),
+  per_celular character varying(15),
+  per_genero character(20),
+  per_ecivil integer,
+  per_ecivil_n character varying(30),
+  per_nro_conadis character varying(19),
+  per_discapacidad character varying(28),
+  per_nacion character varying(20),
+  per_etnia character varying(20),
+  per_discapcidad character varying(20),
+  estado character varying(20) NOT NULL,
+  usuario character varying(30) NOT NULL,
+  fec_sis character varying(25) NOT NULL,
+  CONSTRAINT idper_pk PRIMARY KEY (idper)
+)
+
+pers

@@ -1,0 +1,112 @@
+
+php artisan make:controller Geograficos
+php artisan make:controller Organicos
+php artisan make:controller Personas
+php artisan make:controller Users
+
+
+php artisan make:model Geograficos
+php artisan make:model Organicos
+php artisan make:model Personas
+php artisan make:model Users
+
+Seeders: Crea Instancias de CADA Tabla
+=-------------------------------------
+php artisan make:seeder GeograficosTableSeeder
+php artisan make:seeder OrganicosTableSeeder
+php artisan make:seeder PersonasTableSeeder
+php artisan make:seeder UsersTableSeeder
+
+Crear las Tablas en la DB:
+	- php artisan migrate:make create_geograficos_table
+	- php artisan migrate create_users_table
+	
+	Puedes también poblar tu base de datos utilizando el comando migrate:refresh, el cual restaurará y re-ejecutará todas tus migraciones:
+
+CREA las Tablas en la DB
+-------------------------
+php artisan migrate
+
+Rollback, Crea las Tablas y Rellena Faker
+-----------------------------------------
+php artisan migrate:refresh --seed
+
+Relleno de Datos por Tabla   RELLENA DATOS
+------------------------------------------
+	php artisan db:seed --class=GeograficosTableSeeder
+	php artisan db:seed --class=OrganicosTableSeeder
+	php artisan db:seed --class=PersonasTableSeeder	 	
+	php artisan db:seed --class=UsersTableSeeder	 
+
+
+
+
+
+
+
+
+
+Ejemplo:
+class CreateOrganicosTable extends Migration
+{
+    public function up()
+    {
+        Schema::create('organicos', function (Blueprint $table) {
+            $table->increments('idorg')->unique();
+            $table->integer('org_idgeo')->unsigned();
+            $table->string('org_nombre', 60);
+            $table->string('org_abrevia', 16);          
+            $table->integer('org_institucion');
+            $table->integer('org_ejecutivo');
+            $table->integer('org_subejecutivo');
+            $table->integer('org_coordinador');
+            $table->integer('org_director');
+            $table->integer('org_departamento');
+            $table->integer('org_seccion');
+            $table->string('org_estado', 20);
+            $table->string('org_digitador', 40);
+            $table->rememberToken();
+            $table->nullableTimestamps(); 
+            $table->softDeletes()->nullable();                        
+            $table->foreign('org_idgeo')->references('idgeo')->on('geograficos');
+        });                
+    }
+    public function down()
+    {
+        Schema::drop('organicos');         
+    }
+}
+
+
+
+
+
+
+
+
+
+
+Ejemplo de clase de carga de datos
+==================================
+
+class DatabaseSeeder extends Seeder {
+
+    public function run()
+    {
+        $this->call('UserTableSeeder');
+
+        $this->command->info('User table seeded!');
+    }
+
+}
+
+class UserTableSeeder extends Seeder {
+
+    public function run()
+    {
+        DB::table('users')->delete();
+
+        User::create(['email' => 'foo@bar.com']);
+    }
+
+}

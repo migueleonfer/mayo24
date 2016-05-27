@@ -1,0 +1,189 @@
+
+Laravel 5. En español
+======================
+
+Curso de Fabrcante y Vehiculo
+=============================
+https://www.udemy.com/api-restful-con-laravel-5-composer-apache-nginx-mysql-git-y-github/learn/#/lecture/2258224
+
+
+http://laraveles.com/docs/5.1/controllers
+
+asi: Link un manual:
+
+http://www.desarrolloweb.com/manuales/manual-laravel-5.html 
+
+En 5.2 crear AUTH
+==================
+php artisan make:auth
+
+Ejemplo 1
+	https://medium.com/@yamidvo/tutorial-sistema-de-roles-y-permisos-en-laravel-entrust-a69a8efda3e2#.yrt8axi0r
+	
+	
+
+Virtual Host
+============
+Debemos descomentar (;)
+# Virtual hosts ==> en el archivo httpd.config de xampp
+
+Include conf/extra/httpd-vhosts.conf
+
+#LoadModule rewrite_module modules/mod_rewrite.so
+LoadModule rewrite_module modules/mod_rewrite.so
+
+En el Host:
+----------
+	127.0.0.1       ant_trn.gob.ec
+
+Editando el archivo “httpd-vhosts.conf”	en: C:\xampp\apache\conf\extra
+---------------------------------------
+
+	NameVirtualHost *:80
+	 
+	<VirtualHost *:80>
+		DocumentRoot "c:\web"
+		ServerName localhost
+	</VirtualHost>
+	 
+	<VirtualHost *:80>
+		DocumentRoot "C:\web\ant_trn\public"
+		ServerName www.ant_trn.gob.ec
+		ServerAlias ant_trn.gob.ec
+		<Directory "C:\web\ant_trn\public">
+			Order allow,deny
+			Allow from all
+			# Nueva directiva a activar en Apache 2.4.3 o superior si obtenemos el error "client denied by server configuration"
+		# Require all granted
+		</Directory>
+	</VirtualHost>
+	
+Creacion del Proyecto Laravel
+=============================
+
+1)	Bajar e instalar:  composer
+	Debe estar en el Path de las variables globales del PC.
+	
+2)	Crear el proyecto laravel
+	-	composer create-project laravel/laravel --prefer-dist	
+	-	composer create-project laravel/laravel=5.2 RESTfulAPI
+	
+	
+11)	Creacion de un Modelo
+
+	php artisan make:model Geografico 	// Singular
+	php artisan make:model Organico	
+
+	php artisan make:model Personal
+	
+	
+	
+12)	Creacion de un Controller
+
+	php artisan make:controller Geografico 	// Singular
+	php artisan make:controller Organico	
+	php artisan make:controller Personas	
+	
+13) Ceación de las Tablas Seeders
+
+	https://github.com/jatubio/5minutos_laravel/wiki/Migraciones-en-Laravel----Rollback 
+	
+	
+	php artisan migrate  ==> Error:  [PDOException] could not find driver agregar en PHP.ini quitando ; _pg....
+	
+  	
+	php artisan make:migration create_geograficos_table  // crea la tabla  Geografico ==> EN PLURAL <==
+	php artisan make:migration create_organicos_table
+	php artisan make:migration create_personas_table
+	php artisan make:migration create_users_table	
+	php artisan make:migration create_permisos_table	
+	
+	php artisan make:migration create_users_table  // OJO: http://laraveles.com/docs/5.0/migrations    crea la tabla users
+		!-> tabla despues de personas
+		
+	php artisan migration	// Crea todas las tablas
+	
+		Schema::create('geograficos', function (Blueprint $table) {
+			$table->increments('idgeo')->unique();
+			$table->string('geoNombre', 60);
+			$table->string('geoAbrevia', 10);
+			$table->integer('geoPais');
+			$table->integer('geoRegion');
+			$table->integer('geoProvincia');
+			$table->integer('geoCanton');
+			$table->integer('geoParrouia');
+			$table->integer('geoRegionDiv');
+			$table->integer('geoRegionNat');
+			$table->string('estado', 20);
+			$table->string('digitadoPor', 40);
+			$table->rememberToken();
+			$table->timestamps();
+		});
+
+		Schema::create('organicos', function (Blueprint $table) {
+			$table->increments('idorg')->unique();
+			$table->integer('orgIdGeoX')->unsigned();
+			$table->string('orgNombre', 60);
+			$table->string('orgAbrevia', 10);
+			$table->integer('orgInstitucion');
+			$table->integer('orgEjecutivo');
+			$table->integer('orgSubejecutivo');
+			$table->integer('orgCoordinacion');
+			$table->integer('orgDirector');
+			$table->integer('orgDepartamento');
+			$table->integer('orgSeccion');
+			$table->string('estado', 20);
+			$table->string('digitadoPor', 40);
+			$table->foreign('orgIdGeoX')->references('idGeo')->on('geograficos');
+			$table->rememberToken();
+			$table->nullableTimestamps();
+		});
+		
+	
+error?:
+	Lo curas con:
+	composer dump-autoload
+	
+	php artisan migrate:rollback	==> Deshaces lo ULTIMO creado y que está en database las tablas a crearse.
+	php artisan migrate:reset			Deshacer todas las migraciones
+
+	php artisan db:seed				==> Por defecto, el comando db:seed ejecuta la clase DatabaseSeeder, la cual puede ser utilizada para llamar a otras clase pobladoras. 
+	                                    Sin embargo, se puede especificar la opción --class para ejecutar una clase pobladora específica de forma individual:
+	
+	php artisan db:seed --class=UserTableSeeder
+										
+	php artisan migrate:refresh --seed	// Puedes también poblar tu base de datos utilizando el comando migrate:refresh, el cual restaurará y re-ejecutará todas tus migraciones.									
+
+	php artisan make:seeder GeograficoSeeder	// debe tener el modelo: Use App\Models\Geografico
+	php artisan make:seeder OrganicoSeeder
+	
+14)	Datos Ficticios:	Faker
+
+	ant_trn> composer require fzaninotto/faker --dev
+	
+15) Run y llenar las Tablas
+	
+	Nota: Para realizar el "migrate" y a la vez procesar los seeders, en un solo paso, tienes como alternativa de lanzar el siguiente comando.
+	
+	php artisan migrate	// Solo tablas si seeders
+	
+16)	Para Run crear las tablas y llenar de datos Falsos:
+	
+	php artisan db:seed
+	
+	php artisan db:seed --class=GeograficoSeeder
+	
+============================================================================================================================================
+
+VER Tareas y Menu de Ususarios:  https://styde.net/pivot-tables-con-eloquent-en-laravel/
+
+21)	Creando Models
+
+	php artisan make:model Persona
+	php artisan make:model User
+	
+	
+	
+	
+	
+	
